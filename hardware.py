@@ -20,8 +20,8 @@ def updatePWM(pwms):
         devices[key]['current'] = pwms[key]
     for key in devices.keys():
         hat.set_pwm(devices[key]['channel'],devices[key]['zero'],devices[key]['current'])
-
-    time.sleep(delay)
+        time.sleep(delay)
+    
 
 
 def updateSinglePWM(name,current):
