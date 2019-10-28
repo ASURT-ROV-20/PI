@@ -1,5 +1,20 @@
 import math
+import json
 from enum import Enum
+import rospy
+from std_msgs.msg import String
+
+if __name__ == '__main__':
+    main()
+
+def main():
+    movement = Movement()
+    # rospy rate?
+    # rospy queue size?
+
+    equation_pub = rospy.Publisher("Equations",String, queue_size=10)
+    while True:
+        equation_pub.publish(json.dumps(movement.motors))
 
 
 class MotorPlacement(Enum):

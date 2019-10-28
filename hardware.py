@@ -1,8 +1,9 @@
 import busio
 from adafruit_pca9685 import PCA9685
 import rospy
-from std_msgs.msg import Int8 , Int32 , Empty , Float64
+from std_msgs.msg import Int8 , Int32 , Empty , Float64, String
 import time
+import json
 
 devices = {}
 Zero_thruster = 305
@@ -15,7 +16,8 @@ delay = 0.000020
 def add_Device(name,channel,zero_value):
     devices[name] = {'channel':channel , 'zero':zero_value , 'current': zero_value}
 
-def updatePWM(pwms):
+def updatePWM(pwms_json):
+    pwms = json.loads(pwms_json)
     for key in pwms.keys():
         devices[key]['current'] = pwms[key]
     for key in devices.keys():
@@ -42,7 +44,7 @@ def main():
     hat.add_Device('Back_Cam',1,Zero_Servo)
 
     rospy.init_node('Hardware')
-    rospy.Subscriber('Equations',dictionary,updatePWM)
+    rospy.Subscriber('Equations',String,updatePWM)
     rospy.Subscriber("Control",Float64,Control_PID)
 
     rospy.spin()
