@@ -3,6 +3,7 @@ import json
 from enum import Enum
 import rospy
 from std_msgs.msg import String
+from std_msgs.msg import Float32MultiArray
 
 if __name__ == '__main__':
     main()
@@ -12,6 +13,8 @@ def main():
     # rospy rate?
     # rospy queue size?
 
+    # subscribe to x, y, r from qt
+    qt_sub = rospy.Subscriber("to_be_named_qt", Float32MultiArray, movement.qt_sub_callback)
     equation_pub = rospy.Publisher("Equations",String, queue_size=10)
     while True:
         equation_pub.publish(json.dumps(movement.motors))
@@ -30,9 +33,13 @@ class Movement:
     def __init__(self):
         self.motors = {motor.value: 0 for motor in MotorPlacement}
         self.rotation_efficiency = 0
+    
+    def qt_sub_callback(self, float_array):
+            x, y, r = float_array.data  # todo does that work ?
+            self.__horizontal_motors_pwm(x, y, r)
 
-    def horizontal_motors_pwm(self, x, y, r):
-        """ take movement coordinates in the range of [-1, 1]
+    def __horizontal_motors_pwm(self, x, y, r):
+        """take movement coordinates in the range of [-1, 1]
 
         :param x: movement in x
         :param y: movement in y
