@@ -1,23 +1,29 @@
+#!/usr/bin/env python3.7
+
 import math
 import json
 from enum import Enum
 import rospy
 from std_msgs.msg import String
-from std_msgs.msg import Float32MultiArray
+from geometry_msgs.msg import Quaternion
 
-if __name__ == '__main__':
-    main()
 
 def main():
+    rospy.init_node('equation_node', anonymous=True)
+    rate = rospy.Rate(10)  # 10hz  # ? rospy rate?
+    # rospy.init_node('qt_equation_listener', anonymous=True)
     movement = Movement()
-    # rospy rate?
-    # rospy queue size?
 
-    # subscribe to x, y, r from qt
-    qt_sub = rospy.Subscriber("to_be_named_qt", Float32MultiArray, movement.qt_sub_callback)
-    equation_pub = rospy.Publisher("Equations",String, queue_size=10)
-    while True:
-        equation_pub.publish(json.dumps(movement.motors))
+    # subscribe to x, y, z, r from qt .
+    # Quaternion sends float64 x, y, z, w where w will correspond to the rotation r
+    # ? will both nodes yshta8alo ma3 ba3d kda 3adi? (threading q)
+    rospy.Subscriber("to_be_named_qt", Quaternion, movement.qt_sub_callback)
+    equation_pub = rospy.Publisher("Equations",String, queue_size=10)  # ? rospy queue size?
+    while not rospy.is_shutdown():
+        motion_json = json.dumps(movement.motors)
+        equation_pub.publish(motion_json)
+        rospy.loginfo(motion_json)
+        rate.sleep()
 
 
 class MotorPlacement(Enum):
@@ -33,10 +39,15 @@ class Movement:
     def __init__(self):
         self.motors = {motor.value: 0 for motor in MotorPlacement}
         self.rotation_efficiency = 0
-    
-    def qt_sub_callback(self, float_array):
-            x, y, r = float_array.data  # todo does that work ?
-            self.__horizontal_motors_pwm(x, y, r)
+
+    def qt_sub_callback(self, msg):
+        self.__horizontal_motors_pwm(msg.x, msg.y, msg.w)
+        self.__vertical_motors_pwm(msg.z)
+
+    def __vertical_motors_pwm(self, z):
+        z_pwm = round(z * 100)
+        self.motors[MotorPlacement.vertical_left.value] = z_pwm
+        self.motors[MotorPlacement.vertical_right.value] = z_pwm
 
     def __horizontal_motors_pwm(self, x, y, r):
         """take movement coordinates in the range of [-1, 1]
@@ -72,3 +83,9 @@ class Movement:
         self.motors[MotorPlacement.right_back.value] = round((1 - c) * r_cos_coeff * 100 - c * r * 100, 0)
         self.motors[MotorPlacement.left_back.value] = round((1 - c) * r_sin_coeff * 100 + c * r * 100, 0)
 
+
+if __name__ == '__main__':
+    try:
+        main()
+    except rospy.ROSInterruptException:
+        pass
