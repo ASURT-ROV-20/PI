@@ -3,6 +3,7 @@ from adafruit_pca9685 import PCA9685
 import rospy
 from std_msgs.msg import Int8 , Int32 , Empty , Float64
 import time
+import json
 
 devices = {}
 Zero_thruster = 305
@@ -16,6 +17,7 @@ def add_Device(name,channel,zero_value):
     devices[name] = {'channel':channel , 'zero':zero_value , 'current': zero_value}
 
 def updatePWM(pwms):
+    pwms = json.loads(pwms_json.data)
     for key in pwms.keys():
         devices[key]['current'] = pwms[key]
     for key in devices.keys():
