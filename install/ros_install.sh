@@ -1,4 +1,4 @@
-  GNU nano 2.5.3                                            File: setup.sh                                                                                               
+#!/bin/bash
 
 cd ~
 echo 'Adding sources.list ...'
@@ -8,7 +8,7 @@ sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31
 echo 'Updating packages'
 sudo apt-get update
 echo 'Installing ros'
-sudo apt-get install ros-kinetic-desktop-full -y
+sudo apt-get install -y ros-kinetic-desktop-full
 sudo rosdep init
 rosdep update
 echo "Adding sys vars"
@@ -16,7 +16,7 @@ echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 exec bash
 echo "installing python dependences"
-sudo apt install python-rosinstall python-rosinstall-generator python-wstool build-essential -y
+sudo apt install -y python-rosinstall python-rosinstall-generator python-wstool build-essential
 echo "Creating catkin_ws"
 mkdir catkin_ws/src
 cd catkin_ws
