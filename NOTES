@@ -1,0 +1,13 @@
+1) enable remote ssh from raspi-config
+2) disable GUI
+3) install git sudo apt install git
+4) clone PI repo and run install_ros.sh
+5) remove cloned PI :-) it was just to run install_ros.sh
+
+
+
+Networking ...
+	to get ip address over wifi use sudo nmap -sP 192.168.1.*
+	
+
+
