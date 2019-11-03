@@ -17,6 +17,8 @@ source ~/.bashrc
 exec bash
 echo "installing python dependences"
 sudo apt install -y python-rosinstall python-rosinstall-generator python-wstool build-essential
+pip3 install pyyaml
+pip3 install rospkg
 echo "Creating catkin_ws"
 mkdir catkin_ws/src
 cd catkin_ws
