@@ -6,10 +6,8 @@ error=`tput setaf 1`
 normal=`tput sgr0`
 bold=`tput bold`
 
-cd install
-
 echo "${info}${bold}Installing ROS${normal}"
-sudo ./ross_install.sh
+sudo ./install/ros_install.sh
 if [ $? -eq 0 ]; then
     echo "${success}${bold}ROS Installed Successfully${normal}"
 else
@@ -17,7 +15,7 @@ else
 fi
 
 echo "${info}${bold}Installing GST${normal}"
-sudo ./gst_install.sh
+sudo ./install/gst_install.sh
 if [ $? -eq 0 ]; then
     echo "${success}${bold}GST Installed Successfully${normal}"
 else
@@ -25,7 +23,7 @@ else
 fi
 
 echo "${info}${bold}Installing Hardware Libs${normal}"
-sudo ./hardware.sh
+sudo ./install/hardware.sh
 if [ $? -eq 0 ]; then
     echo "${success}${bold}Hardware Libs Installed Successfully${normal}"
 else
