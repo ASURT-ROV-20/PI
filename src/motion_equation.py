@@ -16,7 +16,6 @@ def main():
 
     # subscribe to x, y, z, r from qt .
     # Quaternion sends float64 x, y, z, w where w will correspond to the rotation r
-    # ? will both nodes yshta8alo ma3 ba3d kda 3adi? (threading q)
     rospy.Subscriber("rov_velocity", Quaternion, movement.qt_sub_callback)
     equation_pub = rospy.Publisher("Equations",String, queue_size=10)  # ? rospy queue size?
     while not rospy.is_shutdown():
