@@ -10,9 +10,9 @@ import json
 devices = {}
 Zero_thruster = 305
 Zero_Servo = 225
-i2c_bus = busio.I2C(SCL, SDA)
-hat = PCA9685(i2c_bus)
-hat.frequency = 50
+i2c_bus = busio.I2C(3, 2)			
+hat = PCA9685()
+hat.pwm_set_freq(50)
 delay = 0.000020
 
 def add_Device(name,channel,zero_value):
@@ -23,7 +23,7 @@ def updatePWM(pwms_json):
     for key in pwms.keys():
         devices[key]['current'] = pwms[key]
     for key in devices.keys():
-        #hat.set_pwm(devices[key]['channel'],devices[key]['zero'],devices[key]['current'])
+        hat.set_pwm(devices[key]['channel'],devices[key]['zero'],devices[key]['current'])
         rospy.loginfo(devices[key]['channel'],devices[key]['zero'],devices[key]['current'])
         time.sleep(delay)
     

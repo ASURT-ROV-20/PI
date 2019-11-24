@@ -3,6 +3,7 @@
 3) install git sudo apt install git
 4) clone PI repo and run install_ros.sh
 5) remove cloned PI :-) it was just to run install_ros.sh
+6) sudo i2cdetect -y 1
 
 
 
