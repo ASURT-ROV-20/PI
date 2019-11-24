@@ -12,7 +12,7 @@ Zero_thruster = 305
 Zero_Servo = 225
 i2c_bus = busio.I2C()
 hat = PCA9685(i2c_bus)
-hat.frequency = 50
+hat.set_pwm_freq(50)
 delay = 0.000020
 
 def add_Device(name,channel,zero_value):
