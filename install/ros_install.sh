@@ -18,15 +18,16 @@ sudo -u $SUDO_USER rosdep update
 echo ${info}${bold}"Adding sys vars"${normal}
 echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
-exec bash
+#exec bash
 echo ${info}${bold}"installing python dependences"${normal}
 sudo apt install -y python-rosinstall python-rosinstall-generator python-wstool build-essential
 pip3 install pyyaml
 pip3 install rospkg
 echo ${info}${bold}"Creating catkin_ws"${normal}
-mkdir catkin_ws/src
+mkdir catkin_ws
 sudo chown -R $USER catkin_ws
 cd catkin_ws
+mkdir src
 catkin_make
 echo ${info}${bold}"configuering catkin_ws"${normal}
 cd devel
@@ -34,7 +35,7 @@ path=$(pwd)
 path=$path"/setup.bash"
 echo "source $path" >> ~/.bashrc
 source ~/.bashrc
-exec bash
+#exec bash
 cd ../src
 echo ${info}${bold}"cloning base repo"${normal}
 git clone https://github.com/ASURT-ROV-20/PI
