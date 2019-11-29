@@ -14,7 +14,7 @@ sudo apt-get update
 echo ${info}${bold}'Installing ros'${normal}
 sudo apt-get install -y ros-kinetic-desktop-full
 sudo rosdep init
-rosdep update
+sudo -u $SUDO_USER rosdep update
 echo ${info}${bold}"Adding sys vars"${normal}
 echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
@@ -25,6 +25,7 @@ pip3 install pyyaml
 pip3 install rospkg
 echo ${info}${bold}"Creating catkin_ws"${normal}
 mkdir catkin_ws/src
+sudo chown -R $USER catkin_ws
 cd catkin_ws
 catkin_make
 echo ${info}${bold}"configuering catkin_ws"${normal}
