@@ -5,11 +5,11 @@ import json
 from std_msgs.msg import String
 from camera import Camera    
 
-def camera_callback(data):
+def camera_callback(info):
     global camera
     global servo_pub
 
-    msg = json.load(data)
+    msg = json.loads(info.data)
     index = int(msg["index"])  
     action = msg["action"]
 

@@ -6,10 +6,10 @@ from gi.repository import GObject, Gst
 class Camera():
     def __init__(self, name, index, host, port):
         Gst.init(None)
-        self.index = index
+        self.index = str(index)
         self.name = name
-        _pipeline = "v4l2src device=/dev/video" + index + " ! image/jpeg,width=1920,height=1080,framerate=30/1 " \
-                  + "! rtpjpegpay ! udpsink host=" + host + " port=" + port
+        _pipeline = "v4l2src device=/dev/video" + self.index + " ! video/x-raw,width=640,height=480,framerate=30/1 ! " \
+                  + "jpegenc ! rtpjpegpay ! udpsink host=" + str(host) + " port=" + str(port)
         self.pipeline = Gst.parse_launch(_pipeline)
         self.start()
 
