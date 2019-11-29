@@ -38,7 +38,6 @@ cd ../src
 echo ${info}${bold}"cloning base repo"${normal}
 git clone https://github.com/ASURT-ROV-20/PI
 cd PI
-
-
-
+echo ${info}${bold}'Installing rospid'${normal}
+sudo apt-get install ros-kinetic-pid
 
