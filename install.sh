@@ -23,9 +23,17 @@ else
 fi
 
 echo "${info}${bold}Installing Hardware Libs${normal}"
-sudo ./install/hardware.sh
+sudo ./install/hardware_install.sh
 if [ $? -eq 0 ]; then
     echo "${success}${bold}Hardware Libs Installed Successfully${normal}"
 else
     echo "${error}${bold}Failed to install Hardware Libs${normal}"
+fi
+
+echo "${info}${bold}Installing Tools${normal}"
+sudo ./install/tools_install.sh
+if [ $? -eq 0 ]; then
+    echo "${success}${bold}Tools Installed Successfully${normal}"
+else
+    echo "${error}${bold}Failed to install Tools${normal}"
 fi
