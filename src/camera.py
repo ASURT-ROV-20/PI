@@ -11,17 +11,18 @@ class Camera():
         _pipeline = "v4l2src device=/dev/video" + index + " ! image/jpeg,width=1920,height=1080,framerate=30/1 " \
                   + "! rtpjpegpay ! udpsink host=" + host + " port=" + port
         self.pipeline = Gst.parse_launch(_pipeline)
-        self.running = False
+        self.start()
 
     def start(self):
         try:
             ret = self.pipeline.set_state(Gst.State.PLAYING)
             if ret == Gst.StateChangeReturn.FAILURE:
                 raise Exception("Error starting the pipeline")
-            self.running=True
+            self.running = True
             print(self.name + " of index " + self.index + " started")
         except :
             print(self.name + " index " + self.index + " is not Connected")
+            self.running = False
             return
 
     def pause(self):

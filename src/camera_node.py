@@ -32,10 +32,12 @@ if __name__ == "__main__" :
     host = "192.168.1.4"
     port1 = 5000
     port2 = 5001
+    port3 = 5002
     
     camera = []
     camera.append(Camera("Main_Cam", 0, host, port1))
     camera.append(Camera("Back_Cam", 1, host, port2))
+    camera.append(Camera("Third_Cam", 3, host, port3))
     
     rospy.spin()
 
