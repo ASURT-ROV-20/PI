@@ -1,9 +1,11 @@
 1) enable remote ssh from raspi-config
-2) disable GUI
-3) install git sudo apt install git
-4) clone PI repo and run install_ros.sh
-5) remove cloned PI :-) it was just to run install_ros.sh
-6) sudo i2cdetect -y 1
+2) give static ip of 10.42.0.15, gateway 10.42.0.1 dnserver 8.8.8.8 8.8.4.4 from edit connections 
+3) in your device edit eth connection to shared to other devices
+4) disable GUI
+5) install git sudo apt install git
+6) clone PI repo and run install_ros.sh
+7) remove cloned PI :-) it was just to run install_ros.sh
+8) sudo i2cdetect -y 1
 
 
 
