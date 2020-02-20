@@ -23,8 +23,7 @@ def updatePWM(pwms_json):
     for key in pwms.keys():
         devices[key]['current'] = pwms[key]
     for key in devices.keys():
-        #hat.set_pwm(devices[key]['channel'],devices[key]['zero'],devices[key]['current'])
-        #hat.channels[devices[key]['channel']].duty_cycle = devices[key]['current']
+        hat.set_pwm(devices[key]['channel'],devices[key]['zero'],devices[key]['current'])
         rospy.loginfo(devices[key]['channel'],devices[key]['zero'],devices[key]['current'])
         time.sleep(delay)
     
@@ -32,8 +31,8 @@ def updatePWM(pwms_json):
 
 def updateSinglePWM(name,current):
     devices[name]['current'] = current
-    #hat.set_pwm(devices[name]['channel'],devices[name]['zero'],devices[name]['current'])
-    
+    hat.set_pwm(devices[name]['channel'],devices[name]['zero'],devices[name]['current'])
+
     time.sleep(delay)
 
 
