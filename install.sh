@@ -14,13 +14,13 @@ else
     echo "${error}${bold}Failed to install ROS${normal}"
 fi
 
-#echo "${info}${bold}Installing GST${normal}"
-#sudo ./install/gst_install.sh
-#if [ $? -eq 0 ]; then
-#    echo "${success}${bold}GST Installed Successfully${normal}"
-#else
-#    echo "${error}${bold}Failed to install GST${normal}"
-#fi
+echo "${info}${bold}Installing GST${normal}"
+sudo ./install/gst_install.sh
+if [ $? -eq 0 ]; then
+    echo "${success}${bold}GST Installed Successfully${normal}"
+else
+    echo "${error}${bold}Failed to install GST${normal}"
+fi
 
 echo "${info}${bold}Installing Hardware Libs${normal}"
 sudo ./install/hardware_install.sh

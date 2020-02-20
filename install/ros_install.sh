@@ -12,7 +12,7 @@ sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31
 echo ${info}${bold}'Updating packages'${normal}
 sudo apt-get update
 echo ${info}${bold}'Installing ros'${normal}
-sudo apt-get install -y ros-kinetic-desktop-full
+sudo apt-get install ros-kinetic-desktop-full
 sudo rosdep init
 sudo -u $SUDO_USER rosdep update
 echo ${info}${bold}"Adding sys vars"${normal}
