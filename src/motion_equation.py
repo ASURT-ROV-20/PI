@@ -38,7 +38,8 @@ class MotorPlacement(Enum):
 class Movement:
     def __init__(self):
         self.motors = {motor.value: 0 for motor in MotorPlacement}
-        self.rotation_efficiency = 0
+        self.MAX_ROTATION_MODIFIER = 0.3
+        self.ROTATION_SPEED = 0.5
 
     def qt_sub_callback(self, msg):
         self.__horizontal_motors_pwm(msg.x, msg.y, msg.w)
@@ -49,7 +50,7 @@ class Movement:
         self.motors[MotorPlacement.vertical_left.value] = z_pwm
         self.motors[MotorPlacement.vertical_right.value] = z_pwm
 
-    def __horizontal_motors_pwm(self, x, y, r):
+    def horizontal_motors_pwm(self, x, y, r_in):
         """take movement coordinates in the range of [-1, 1]
 
         :param x: movement in x
@@ -73,15 +74,37 @@ class Movement:
         sin = math.sin(theta)
         cos = math.cos(theta)
         max_sinusoidal = max(abs(sin), abs(cos))
-        # ============ ( c ) is the Rotation Efficiency =================
-        c = self.rotation_efficiency
+        # ============ ( rot_modifier ) is the Rotation Efficiency =================
+        # rot_modifier = self.scale_rot_eff_linear(r_in)
+        rot_modifier = self.scale_rot_eff_poly(r_in, 1.5)
+        # rot_modifier = self.scale_rot_eff_sqrt(r_in)
         r_cos_coeff = resultant * cos / max_sinusoidal
         r_sin_coeff = resultant * sin / max_sinusoidal
 
-        self.motors[MotorPlacement.left_front.value] = round((1 - c) * r_cos_coeff * 100 + c * r * 100, 0)
-        self.motors[MotorPlacement.right_front.value] = round((1 - c) * r_sin_coeff * 100 - c * r * 100, 0)
-        self.motors[MotorPlacement.right_back.value] = round((1 - c) * r_cos_coeff * 100 - c * r * 100, 0)
-        self.motors[MotorPlacement.left_back.value] = round((1 - c) * r_sin_coeff * 100 + c * r * 100, 0)
+        print(resultant)
+        if not resultant:  # could be replaced with if resultant < .05: # to ignore small handling errors
+            rot_modifier = self.ROTATION_SPEED
+
+        self.motors[MotorPlacement.left_front.value] = \
+            round((1 - rot_modifier) * r_cos_coeff * 100 + rot_modifier * r_in * 100, 0)
+
+        self.motors[MotorPlacement.right_front.value] = \
+            round((1 - rot_modifier) * r_sin_coeff * 100 - rot_modifier * r_in * 100, 0)
+
+        self.motors[MotorPlacement.right_back.value] = \
+            round((1 - rot_modifier) * r_cos_coeff * 100 - rot_modifier * r_in * 100, 0)
+
+        self.motors[MotorPlacement.left_back.value] = \
+            round((1 - rot_modifier) * r_sin_coeff * 100 + rot_modifier * r_in * 100, 0)
+
+    def scale_rot_modif_linear(self, r_in):
+        return abs(r_in) * self.MAX_ROTATION_MODIFIER
+
+    def scale_rot_modif_poly(self, r_in, pol_degree):
+        return (abs(r_in) ** pol_degree) * self.MAX_ROTATION_MODIFIER
+
+    def scale_rot_modif_sqrt(self, r_in):
+        return abs(r_in) * self.MAX_ROTATION_MODIFIER
 
 
 if __name__ == '__main__':
