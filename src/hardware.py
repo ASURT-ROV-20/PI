@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3
 
 import busio
 from Adafruit_PCA9685 import PCA9685
@@ -8,7 +8,7 @@ import time
 import json
 
 devices = {}
-Zero_thruster = 305
+Zero_thruster = 340
 Zero_Servo = 225
 i2c_bus = busio.I2C(3, 2)			
 hat = PCA9685()
@@ -23,8 +23,10 @@ def updatePWM(pwms_json):
     for key in pwms.keys():
         devices[key]['current'] = pwms[key]
     for key in devices.keys():
-        hat.set_pwm(devices[key]['channel'],devices[key]['zero'],devices[key]['current'])
-        print(key, devices[key]['channel'],devices[key]['zero'],devices[key]['current'])
+#        hat.set_pwm(devices[key]['channel'],0,int(devices[key]['current'] + 340))
+        if True:
+            print(key, devices[key]['channel'],devices[key]['zero'],devices[key]['current']+340)
+            hat.set_pwm(devices[key]['channel'],0,int(devices[key]['current'] + 340))
         time.sleep(delay)
     
 
@@ -37,13 +39,13 @@ def updateSinglePWM(name,current):
 
 
 def main():
-    add_Device('Left_Front', 5, Zero_thruster)
-    add_Device('Right_Front', 2, Zero_thruster)
-    add_Device('Right_Back', 13, Zero_thruster)
-    add_Device('Left_Back', 15, Zero_thruster)
-    add_Device('Vertical_Right', 9, Zero_thruster)
-    add_Device('Vertical_Left', 11, Zero_thruster)
-    add_Device('Main_Cam',0,Zero_Servo)
+    add_Device('Left_Front', 14, Zero_thruster)
+    add_Device('Right_Front', 15, Zero_thruster)
+    add_Device('Right_Back', 11, Zero_thruster)
+    add_Device('Left_Back', 10, Zero_thruster)
+    add_Device('Vertical_Right', 13, Zero_thruster)
+    add_Device('Vertical_Left', 12, Zero_thruster)
+    add_Device('Main_Cam',2,Zero_Servo)
     add_Device('Back_Cam',1,Zero_Servo)
 
     rospy.init_node('Hardware')

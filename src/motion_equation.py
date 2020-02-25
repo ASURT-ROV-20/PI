@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3
 
 import math
 import json
@@ -38,7 +38,7 @@ class MotorPlacement(Enum):
 class Movement:
     def __init__(self):
         self.motors = {motor.value: 0 for motor in MotorPlacement}
-        self.rotation_efficiency = 0
+        self.rotation_efficiency = 0.2
 
     def qt_sub_callback(self, msg):
         self.__horizontal_motors_pwm(msg.x, msg.y, msg.w)
@@ -78,10 +78,10 @@ class Movement:
         r_cos_coeff = resultant * cos / max_sinusoidal
         r_sin_coeff = resultant * sin / max_sinusoidal
 
-        self.motors[MotorPlacement.left_front.value] = round((1 - c) * r_cos_coeff * 100 + c * r * 100, 0)
-        self.motors[MotorPlacement.right_front.value] = round((1 - c) * r_sin_coeff * 100 - c * r * 100, 0)
-        self.motors[MotorPlacement.right_back.value] = round((1 - c) * r_cos_coeff * 100 - c * r * 100, 0)
-        self.motors[MotorPlacement.left_back.value] = round((1 - c) * r_sin_coeff * 100 + c * r * 100, 0)
+        self.motors[MotorPlacement.left_front.value] = (  r_cos_coeff - r * c )  *100
+        self.motors[MotorPlacement.right_front.value] =(   r_sin_coeff +  r * c) *100
+        self.motors[MotorPlacement.right_back.value] = (  r_cos_coeff + r * c )  *100
+        self.motors[MotorPlacement.left_back.value] =  ( r_sin_coeff -  r * c )  *100
 
 
 if __name__ == '__main__':
