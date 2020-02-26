@@ -50,7 +50,7 @@ class Movement:
         self.motors[MotorPlacement.vertical_left.value] = z_pwm
         self.motors[MotorPlacement.vertical_right.value] = z_pwm
 
-    def horizontal_motors_pwm(self, x, y, r_in):
+    def __horizontal_motors_pwm(self, x, y, r_in):
         """take movement coordinates in the range of [-1, 1]
 
         :param x: movement in x
