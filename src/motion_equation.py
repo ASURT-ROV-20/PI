@@ -49,7 +49,16 @@ class Movement:
         z_pwm = round(z * 100)
         self.motors[MotorPlacement.vertical_left.value] = z_pwm
         self.motors[MotorPlacement.vertical_right.value] = z_pwm
+    
+    def scale_rot_modif_linear(self, r_in):
+        return abs(r_in) * self.MAX_ROTATION_MODIFIER
 
+    def scale_rot_modif_poly(self, r_in, pol_degree):
+        return (abs(r_in) ** pol_degree) * self.MAX_ROTATION_MODIFIER
+
+    def scale_rot_modif_sqrt(self, r_in):
+        return abs(r_in) * self.MAX_ROTATION_MODIFIER
+    
     def __horizontal_motors_pwm(self, x, y, r_in):
         """take movement coordinates in the range of [-1, 1]
 
@@ -76,7 +85,7 @@ class Movement:
         max_sinusoidal = max(abs(sin), abs(cos))
         # ============ ( rot_modifier ) is the Rotation Efficiency =================
         # rot_modifier = self.scale_rot_eff_linear(r_in)
-        rot_modifier = self.scale_rot_eff_poly(r_in, 1.5)
+        rot_modifier = self.scale_rot_modif_poly(r_in, 1.5)
         # rot_modifier = self.scale_rot_eff_sqrt(r_in)
         r_cos_coeff = resultant * cos / max_sinusoidal
         r_sin_coeff = resultant * sin / max_sinusoidal
@@ -96,15 +105,6 @@ class Movement:
 
         self.motors[MotorPlacement.left_back.value] = \
             round((1 - rot_modifier) * r_sin_coeff * 100 + rot_modifier * r_in * 100, 0)
-
-    def scale_rot_modif_linear(self, r_in):
-        return abs(r_in) * self.MAX_ROTATION_MODIFIER
-
-    def scale_rot_modif_poly(self, r_in, pol_degree):
-        return (abs(r_in) ** pol_degree) * self.MAX_ROTATION_MODIFIER
-
-    def scale_rot_modif_sqrt(self, r_in):
-        return abs(r_in) * self.MAX_ROTATION_MODIFIER
 
 
 if __name__ == '__main__':
