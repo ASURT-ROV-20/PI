@@ -37,6 +37,17 @@ def updateSinglePWM(name,current):
 
     time.sleep(delay)
 
+#def PID_Control(pwm_z):
+#         pwm = pwm_z.data
+#         if abs ( devices['Vertical_Left']['current'] - pwm ) <= 2 or (devices['Vertical_Right']['current'] - pwm ) <= 2:
+#                 return
+# 
+# 
+#         time.sleep(delay)
+# 
+#         devices['Vertical_Left']['current'] =pwm
+#         devices['Vertical_Right']['current'] =pwm
+#         print("control value:: ",pwm)
 
 def main():
     add_Device('Left_Front', 14, Zero_thruster)
@@ -50,7 +61,7 @@ def main():
 
     rospy.init_node('Hardware')
     rospy.Subscriber('Equations',String,updatePWM)
-    #rospy.Subscriber("Control",Float64,Control_PID)
+    #rospy.Subscriber("Control",Float64,PID_Control)
 
     rospy.spin()
 
