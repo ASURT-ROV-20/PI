@@ -25,8 +25,8 @@ def updatePWM(pwms_json):
     for key in devices.keys():
 #        hat.set_pwm(devices[key]['channel'],0,int(devices[key]['current'] + 340))
         if True:
-            print(key, devices[key]['channel'],devices[key]['zero'],devices[key]['current']+340)
-            hat.set_pwm(devices[key]['channel'],0,int(devices[key]['current'] + 340))
+            print(key, devices[key]['channel'],devices[key]['zero'],devices[key]['current']+Zero_thruster)
+            hat.set_pwm(devices[key]['channel'],0,int(devices[key]['current'] + Zero_thruster))
         time.sleep(delay)
     
 
