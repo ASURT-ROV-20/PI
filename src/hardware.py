@@ -8,6 +8,7 @@ import time
 import json
 
 devices = {}
+servos = {}
 Zero_thruster = 340
 Zero_Servo = 225
 i2c_bus = busio.I2C(3, 2)			
@@ -28,8 +29,17 @@ def updatePWM(pwms_json):
             print(key, devices[key]['channel'],devices[key]['zero'],devices[key]['current']+Zero_thruster)
             hat.set_pwm(devices[key]['channel'],0,int(devices[key]['current'] + Zero_thruster))
         time.sleep(delay)
-    
 
+def update_servos(servos_json):
+    new_servos = json.loads(servos_json.data)
+    for key in new_servos.keys():
+        servos[key]['current'] = servos[key]
+    for key in servos.keys():
+        if True:
+            print(key, servos[key]['channel'], servos[key]['zero'], servos[key]['current'] + Zero_Servo)
+            # todo move servos
+            # hat.set_pwm(servos[key]['channel'], 0, int(servos[key]['current'] + Zero_thruster))
+        time.sleep(delay)
 
 def updateSinglePWM(name,current):
     devices[name]['current'] = current
@@ -61,6 +71,7 @@ def main():
 
     rospy.init_node('Hardware')
     rospy.Subscriber('Equations',String,updatePWM)
+    rospy.Subscriber('Servos',String,update_servos)
     #rospy.Subscriber("Control",Float64,PID_Control)
 
     rospy.spin()

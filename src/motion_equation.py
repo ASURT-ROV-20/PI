@@ -18,11 +18,17 @@ def main():
     # Quaternion sends float64 x, y, z, w where w will correspond to the rotation r
     # ? will both nodes yshta8alo ma3 ba3d kda 3adi? (threading q)
     rospy.Subscriber("rov_velocity", Quaternion, movement.qt_sub_callback)
+    rospy.Subscriber("rov_camera_servo", String, movement.qt_sub_callback)
     equation_pub = rospy.Publisher("Equations",String, queue_size=10)  # ? rospy queue size?
+    servo_pub = rospy.Publisher("Servos",String, queue_size=10)  # ? rospy queue size?
+
     while not rospy.is_shutdown():
         motion_json = json.dumps(movement.motors)
         equation_pub.publish(motion_json)
+        servos_json = json.dumps(movement.servos)
+        servo_pub.publish(servos_json)
         rospy.loginfo(motion_json)
+        rospy.loginfo(servos_json)
         rate.sleep()
 
 
@@ -34,16 +40,30 @@ class MotorPlacement(Enum):
     vertical_right = "Vertical_Right"
     vertical_left = "Vertical_Left"
 
+class Cameras(Enum):
+    cam_1 = "cam1"
+    cam_2 = "cam2"
+    cam_3 = "cam3"
+
 
 class Movement:
     def __init__(self):
-        self.motors = {motor.value: 0 for motor in MotorPlacement}
         self.MAX_ROTATION_MODIFIER = 0.12
         self.ROTATION_SPEED = 0.5
+        self.SERVO_ZERO = 225
+        self.SERVO_MIN = 100
+        self.SERVO_MAX = 390
+        self.SERVO_STEP = 5
+        self.motors = {motor.value: 0 for motor in MotorPlacement}
+        self.servos = {cam.value: SERVO_ZERO for cam in Cameras}
 
     def qt_sub_callback(self, msg):
         self.__horizontal_motors_pwm(msg.x, msg.y, msg.w)
         self.__vertical_motors_pwm(msg.z)
+
+    def qt_servo_sub_callback(self, msg):
+        str, num = msg.data.split()
+        self.__move_camera(str, int(num))
 
     def __vertical_motors_pwm(self, z):
         z_pwm = round(z * 100)
@@ -59,6 +79,14 @@ class Movement:
     def scale_rot_modif_sqrt(self, r_in):
         return abs(r_in) * self.MAX_ROTATION_MODIFIER
     
+    def __move_camera(self, cam_num, num):
+        """
+
+        :param cam_num: cam1/ cam2/ cam3
+        :param num: -1 to decrease, +1 to increase, 0 -> no change
+        """
+        servos[cam_num] += num * self.SERVO_STEP
+
     def __horizontal_motors_pwm(self, x, y, r_in):
         """take movement coordinates in the range of [-1, 1]
 
@@ -67,8 +95,7 @@ class Movement:
         :param r: rotation (clockwise)
         :return: the four horizontal motors pwm range [0, 100] (int)
         """
-        x = -x
-        r_in = -r_in
+
         theta = math.atan2(y, x)
 
         # Reference:
