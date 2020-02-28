@@ -18,7 +18,7 @@ def main():
     # Quaternion sends float64 x, y, z, w where w will correspond to the rotation r
     # ? will both nodes yshta8alo ma3 ba3d kda 3adi? (threading q)
     rospy.Subscriber("rov_velocity", Quaternion, movement.qt_sub_callback)
-    rospy.Subscriber("rov_camera_servo", String, movement.qt_sub_callback)
+    rospy.Subscriber("rov_camera_servo", String, movement.qt_servo_sub_callback)
     equation_pub = rospy.Publisher("Equations",String, queue_size=10)  # ? rospy queue size?
     servo_pub = rospy.Publisher("Servos",String, queue_size=10)  # ? rospy queue size?
 
@@ -62,7 +62,7 @@ class Movement:
         self.__vertical_motors_pwm(msg.z)
 
     def qt_servo_sub_callback(self, msg):
-        str, num = msg.data.split()
+        str, num = msg.data.split(':')
         self.__move_camera(str, int(num))
 
     def __vertical_motors_pwm(self, z):
@@ -85,7 +85,7 @@ class Movement:
         :param cam_num: cam1/ cam2/ cam3
         :param num: -1 to decrease, +1 to increase, 0 -> no change
         """
-        servos[cam_num] += num * self.SERVO_STEP
+        self.servos[cam_num] += num * self.SERVO_STEP
 
     def __horizontal_motors_pwm(self, x, y, r_in):
         """take movement coordinates in the range of [-1, 1]
