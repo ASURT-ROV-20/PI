@@ -55,7 +55,7 @@ class Movement:
         self.SERVO_MAX = 390
         self.SERVO_STEP = 5
         self.motors = {motor.value: 0 for motor in MotorPlacement}
-        self.servos = {cam.value: SERVO_ZERO for cam in Cameras}
+        self.servos = {cam.value: self.SERVO_ZERO for cam in Cameras}
 
     def qt_sub_callback(self, msg):
         self.__horizontal_motors_pwm(msg.x, msg.y, msg.w)
