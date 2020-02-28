@@ -30,17 +30,6 @@ def updatePWM(pwms_json):
             hat.set_pwm(devices[key]['channel'],0,int(devices[key]['current'] + Zero_thruster))
         time.sleep(delay)
 
-def update_servos(servos_json):
-    new_servos = json.loads(servos_json.data)
-    for key in new_servos.keys():
-        servos[key]['current'] = servos[key]
-    for key in servos.keys():
-        if True:
-            print(key, servos[key]['channel'], servos[key]['zero'], servos[key]['current'] + Zero_Servo)
-            # todo move servos
-            # hat.set_pwm(servos[key]['channel'], 0, int(servos[key]['current'] + Zero_thruster))
-        time.sleep(delay)
-
 def updateSinglePWM(name,current):
     devices[name]['current'] = current
     hat.set_pwm(devices[name]['channel'],devices[name]['zero'],devices[name]['current'])
@@ -66,12 +55,13 @@ def main():
     add_Device('Left_Back', 10, Zero_thruster)
     add_Device('Vertical_Right', 13, Zero_thruster)
     add_Device('Vertical_Left', 12, Zero_thruster)
-    add_Device('Main_Cam',2,Zero_Servo)
-    add_Device('Back_Cam',1,Zero_Servo)
+    add_Device('cam1',2,Zero_Servo)
+    add_Device('cam2',1,Zero_Servo)
+    add_Device('cam3',99,Zero_Servo) # todo set correct channel
 
     rospy.init_node('Hardware')
     rospy.Subscriber('Equations',String,updatePWM)
-    rospy.Subscriber('Servos',String,update_servos)
+    rospy.Subscriber('Servos',String,updatePWM)
     #rospy.Subscriber("Control",Float64,PID_Control)
 
     rospy.spin()
