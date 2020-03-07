@@ -8,7 +8,8 @@ import time
 import json
 
 devices = {}
-servos = {}
+cameras = {}
+
 Zero_thruster = 340
 Zero_Servo = 225
 i2c_bus = busio.I2C(3, 2)			
@@ -17,9 +18,11 @@ hat.set_pwm_freq(50)
 delay = 0.000020
 
 def add_Device(name,channel,zero_value):
-    devices[name] = {'channel':channel , 'zero':zero_value , 'current': zero_value}
+    devices[name] = {'channel':channel , 'zero':zero_value , 'current': zero_value}\
+def add_Camera(name,channel,zero_value):
+    cameras[name] = {'channel':channel , 'zero':zero_value , 'current': zero_value}
 
-def updatePWM(pwms_json):
+def updateMotorPWM(pwms_json):
     pwms = json.loads(pwms_json.data)
     for key in pwms.keys():
         devices[key]['current'] = pwms[key]
@@ -28,6 +31,17 @@ def updatePWM(pwms_json):
         if True:
             print(key, devices[key]['channel'],devices[key]['zero'],devices[key]['current']+devices[key]['zero'])
             hat.set_pwm(devices[key]['channel'],0,int(devices[key]['current'] + devices[key]['zero']))
+        time.sleep(delay)
+
+def updateCameraPWM(pwms_json):
+    pwms = json.loads(pwms_json.data)
+    for key in pwms.keys():
+        cameras[key]['current'] = pwms[key]
+    for key in cameras.keys():
+#        hat.set_pwm(devices[key]['channel'],0,int(devices[key]['current'] + 340))
+        if True:
+            print(key, cameras[key]['channel'],cameras[key]['zero'],cameras[key]['current']+cameras[key]['zero'])
+            hat.set_pwm(cameras[key]['channel'],0,int(cameras[key]['current'] + cameras[key]['zero']))
         time.sleep(delay)
 
 def updateSinglePWM(name,current):
@@ -55,13 +69,13 @@ def main():
     add_Device('Left_Back', 10, Zero_thruster)
     add_Device('Vertical_Right', 13, Zero_thruster)
     add_Device('Vertical_Left', 12, Zero_thruster)
-    add_Device('cam1',2,Zero_Servo)
-    add_Device('cam2',1,Zero_Servo)
-    add_Device('cam3',99,Zero_Servo) # todo set correct channel
+    add_Camera('cam1',2,Zero_Servo)
+    add_Camera('cam2',1,Zero_Servo)
+    add_Camera('cam3',99,Zero_Servo) # todo set correct channel
 
     rospy.init_node('Hardware')
-    rospy.Subscriber('Equations',String,updatePWM)
-    rospy.Subscriber('Servos',String,updatePWM)
+    rospy.Subscriber('Equations',String,updateMotorPWM)
+    rospy.Subscriber('Servos',String,updateCameraPWM)
     #rospy.Subscriber("Control",Float64,PID_Control)
 
     rospy.spin()
