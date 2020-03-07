@@ -10,7 +10,7 @@ from geometry_msgs.msg import Quaternion
 
 def main():
     rospy.init_node('equation_node', anonymous=True)
-    rate = rospy.Rate(10)  # 10hz  # ? rospy rate?
+    rate = rospy.Rate(20)  # 10hz  # ? rospy rate?
     # rospy.init_node('qt_equation_listener', anonymous=True)
     movement = Movement()
 
@@ -27,8 +27,10 @@ def main():
         equation_pub.publish(motion_json)
         servos_json = json.dumps(movement.servos)
         servo_pub.publish(servos_json)
-        rospy.loginfo(motion_json)
-        rospy.loginfo(servos_json)
+#        rospy.loginfo(motion_json)
+#        rospy.loginfo(servos_json)
+        print(motion_json)
+#        print(servos_json)
         rate.sleep()
 
 
