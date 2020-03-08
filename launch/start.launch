@@ -1,0 +1,5 @@
+<launch>
+	<node name="ping" 	pkg="PI" type="ping.py" />
+	<node name="hardware" 	pkg="PI" type="hardware.py" />
+	<node name="motion_equation"	pkg="PI" type="motion_equation.py" />
+</launch>

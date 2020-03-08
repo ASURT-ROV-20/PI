@@ -1,0 +1,11 @@
+<launch>
+    <node name="Ping" pkg="PI" type="ping.py" output="screen" ></node>
+   
+    <node name="Hardware" pkg="PI" type="hardware.py" output="screen" ></node>
+
+    <node name="equation_node" pkg="PI" type="motion_equation.py" output="screen" ></node>
+
+    <node name="depth_control" pkg="PI" type="depth_control.py" output="screen" ></node>
+
+
+</launch>

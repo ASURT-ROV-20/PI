@@ -50,8 +50,8 @@ class Cameras(Enum):
 
 class Movement:
     def __init__(self):
-        self.MAX_ROTATION_MODIFIER = 0.12
-        self.ROTATION_SPEED = 0.5
+        self.MAX_ROTATION_MODIFIER = 0.28
+        self.ROTATION_SPEED = 0.42
         self.SERVO_ZERO = 225
         self.SERVO_MIN = 100
         self.SERVO_MAX = 390
