@@ -17,8 +17,10 @@ hat = PCA9685()
 hat.set_pwm_freq(50)
 delay = 0.000020
 
+
 def add_Motor(name,channel,zero_value):
     motors[name] = {'channel':channel , 'zero':zero_value , 'current': zero_value}
+
 def add_Camera(name,channel,zero_value):
     cameras[name] = {'channel':channel , 'zero':zero_value , 'current': zero_value}
 
