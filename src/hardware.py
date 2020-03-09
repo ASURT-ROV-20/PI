@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import busio
+#import busio
 from Adafruit_PCA9685 import PCA9685
 import rospy
 from std_msgs.msg import String,Float64
@@ -12,7 +12,7 @@ cameras = {}
 
 Zero_thruster = 340
 Zero_Servo = 225
-i2c_bus = busio.I2C(3, 2)
+#i2c_bus = busio.I2C(3, 2)
 hat = PCA9685()
 hat.set_pwm_freq(50)
 delay = 0.000020
@@ -36,7 +36,7 @@ def updateMotorPWM(pwms_json):
 		current_pwm = motors[key]['current']
 		if not math.isnan(current_pwm):
 		    print(key, motors[key]['channel'],int(current_pwm+motors[key]['zero']))
-		    # hat.set_pwm(motors[key]['channel'],0,int(current_pwm + motors[key]['zero']))
+		    hat.set_pwm(motors[key]['channel'],0,int(current_pwm + motors[key]['zero']))
 		time.sleep(delay)
 
 def updateCameraPWM(pwms_json):
@@ -47,7 +47,7 @@ def updateCameraPWM(pwms_json):
 		current_pwm = cameras[key]['current']
 		if not math.isnan(current_pwm):
 		    print(key, cameras[key]['channel'],int(current_pwm))
-		    #hat.set_pwm(cameras[key]['channel'],0,int(current_pwm + cameras[key]['zero']))
+		    hat.set_pwm(cameras[key]['channel'],0,int(current_pwm + cameras[key]['zero']))
 		time.sleep(delay)
 
 
@@ -64,20 +64,20 @@ def addHardwareDevices():
 	add_Motor('Left_Back', 10, Zero_thruster)
 	add_Motor('Vertical_Right', 13, Zero_thruster)
 	add_Motor('Vertical_Left', 12, Zero_thruster)
-	add_Camera('cam1',0,Zero_Servo)
-	add_Camera('cam2',1,Zero_Servo)
+	add_Camera('cam1',1,Zero_Servo)
+	add_Camera('cam2',0,Zero_Servo)
 	add_Camera('cam3',2,Zero_Servo)
 
 def pid_callback(pwm_z):
 	global control_pwm
 	control_pwm = pwm_z.data
-	
+
 def main():
 
     addHardwareDevices()
     rospy.init_node('Hardware')
     rospy.Subscriber('Equations',String,updateMotorPWM)
-    rospy.Subscriber('Servos',String,updateCameraPWM)
+#    rospy.Subscriber('Servos',String,updateCameraPWM)
     rospy.Subscriber('control_effort',Float64,pid_callback)
     rospy.spin()
 

@@ -7,35 +7,40 @@ import time
 import json
 import ms5837
 
+rospy.init_node("depth_control")
 setpoint = 0
 sensor = ms5837.MS5837_30BA()
 sensor.init()
-sensor_offset = calibrate_sensor(sensor, 20)
+sensor_offset = 0.35
 pid_depth = pid_controller.PID(kp = 1000, ki = 1000, kd = 800,
-                            wind_up = 20, upper_limit = 100, lower_limit = -100)
+                                   wind_up = 20, upper_limit = 100, lower_limit = -100)
+pid_depth.enable = False
 
 def main():
-    rospy.init_node("depth_control")
+    global pid_depth
     setpoint_publisher = rospy.Publisher("setpoint", Float64, queue_size=5)
     pwm_publisher = rospy.Publisher("control_effort", Float64, queue_size=5)
     state_publisher = rospy.Publisher("state",Float64, queue_size=5)
-
-    pid_depth.enable = True
-
+    
+   # sensor_offset = calibrate_sensor(sensor, 20)
     rospy.Subscriber("control_status", String, set_depth)
-
+    flag = True
     while not rospy.is_shutdown(): 
-        # if pid_depth.enable :
-        sensor.read()
-        state = sensor.depth() - sensor_offset
-        pwm = - pid_depth.update(setpoint, state)
-        pwm = int(pwm)
-        pwm_publisher.publish(pwm)
-        state_publisher.publish(state)
-        setpoint_publisher.publish(setpoint)
-            # time.sleep(0.09)
-        # else : 
-        #     time.sleep(0.01)
+        if pid_depth.enable :
+            sensor.read()
+            state = sensor.depth() - sensor_offset
+            pwm = - pid_depth.update(setpoint, state)
+            pwm = int(pwm)
+            pwm_publisher.publish(pwm)
+            state_publisher.publish(state)
+            setpoint_publisher.publish(setpoint)
+            flag = True
+            time.sleep(0.05)
+        else : 
+            if flag : 
+                pwm_publisher.publish(0)
+                flag = False 
+            time.sleep(0.01)
 
 def calibrate_sensor(sensor, n):
     cal_const = 0
@@ -49,11 +54,15 @@ pre_z = 0
 def set_depth(msg):
     global setpoint
     global pid_depth
+    global sensor
     msg = json.loads(msg.data)
     if msg["axis"] == "z" :
-        if msg["enabled"] == "true" :
-            pid_depth.enable = True
+        if msg["enabled"] :
             sensor.read()
             setpoint = sensor.depth() - sensor_offset
-        elif msg["enabled"] == "false" :
+            time.sleep(0.01)
+            pid_depth.enable = True
+        else:
             pid_depth.enable = False
+if __name__ == "__main__":
+    main()
