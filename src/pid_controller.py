@@ -19,7 +19,7 @@ class PID:
         self.upper_limit = upper_limit
         self.lower_limit = lower_limit
 
-        self.sample_time = 0.09
+        self.sample_time = 0.01
         self.current_time = time.time()
         self.last_time = self.current_time
         self.first = True
@@ -51,8 +51,8 @@ class PID:
         # self.int_error = 0.0
 
     def update(self, setpoint, state):
-#        if ~self.enable :
-#            return 0
+        if not self.enable :
+            return 0
         self.error = setpoint - state
         self.current_time = time.time()
         delta_time = self.current_time - self.last_time

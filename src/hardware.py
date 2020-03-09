@@ -3,7 +3,7 @@
 import busio
 from Adafruit_PCA9685 import PCA9685
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String,Float64
 import time
 import json
 import math
@@ -16,6 +16,7 @@ i2c_bus = busio.I2C(3, 2)
 hat = PCA9685()
 hat.set_pwm_freq(50)
 delay = 0.000020
+control_pwm = 0
 
 
 def add_Motor(name,channel,zero_value):
@@ -28,6 +29,9 @@ def updateMotorPWM(pwms_json):
 	pwms = json.loads(pwms_json.data)
 	for key in pwms.keys():
 		motors[key]['current'] = pwms[key]
+	current_z = motors["vertical_left"]["current"]
+	motors["vertical_left"]["current"] = current_z if current_z else control_pwm
+	motors["vertical_right"]["current"] = motors["vertical_left"]["current"]
 	for key in motors.keys():
 		current_pwm = motors[key]['current']
 		if not math.isnan(current_pwm):
@@ -63,12 +67,16 @@ def addHardwareDevices():
 	add_Camera('cam2',1,Zero_Servo)
 	add_Camera('cam3',2,Zero_Servo)
 
+def pid_callback(pwm_z):
+	global control_pwm
+	control_pwm = pwm_z.data
+	
 def main():
     addHardwareDevices()
     rospy.init_node('Hardware')
     rospy.Subscriber('Equations',String,updateMotorPWM)
     rospy.Subscriber('Servos',String,updateCameraPWM)
-
+    rospy.Subscriber('control_effort',Float64,pid_callback)
     rospy.spin()
 
 
