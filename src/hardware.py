@@ -46,7 +46,7 @@ def updateCameraPWM(pwms_json):
 	for key in cameras.keys():
 		current_pwm = cameras[key]['current']
 		if not math.isnan(current_pwm):
-		    print(key, cameras[key]['channel'],int(current_pwm + cameras[key]['zero']))
+		    print(key, cameras[key]['channel'],int(current_pwm))
 		    #hat.set_pwm(cameras[key]['channel'],0,int(current_pwm + cameras[key]['zero']))
 		time.sleep(delay)
 

@@ -87,8 +87,12 @@ class Movement:
         :param cam_num: cam1/ cam2/ cam3
         :param num: -1 to decrease, +1 to increase, 0 -> no change
         """
-        if self.servos[cam_num] < self.SERVO_MAX and self.servos[cam_num] >= self.SERVO_MIN:
-            self.servos[cam_num] += num * self.SERVO_STEP
+        self.servos[cam_num] += num * self.SERVO_STEP
+        if self.servos[cam_num] > self.SERVO_MAX:
+            self.servos[cam_num] = self.SERVO_MAX
+        elif  self.servos[cam_num] < self.SERVO_MIN:
+            self.servos[cam_num] = self.SERVO_MIN
+        
 
     def __horizontal_motors_pwm(self, x, y, r_in):
         """take movement coordinates in the range of [-1, 1]

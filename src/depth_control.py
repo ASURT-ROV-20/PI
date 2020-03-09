@@ -22,7 +22,7 @@ def main():
 
     pid_depth.enable = True
 
-    rospy.Subscriber("QT", String, set_depth)
+    rospy.Subscriber("control_status", String, set_depth)
 
     while not rospy.is_shutdown(): 
         # if pid_depth.enable :
