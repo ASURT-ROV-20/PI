@@ -23,6 +23,7 @@ class PID:
         self.current_time = time.time()
         self.last_time = self.current_time
         self.first = True
+        self.enable = False
         self.clear()
 
         self.srv = Server(pid_paramConfig, self.reconfigurecallback)
@@ -45,10 +46,17 @@ class PID:
         self.dterm = 0.0
         self.last_error = 0.0
 
-        self.enable = False
-        # self.wind_up = 0.0
         self.output = 0.0
         # self.int_error = 0.0
+    
+    def start(self):
+        self.clear()
+        self.last_time = time.time()
+        self.enable = True
+    
+    def pause(self):
+        self.enable = False
+        self.clear()
 
     def update(self, setpoint, state):
         if not self.enable :
@@ -67,12 +75,16 @@ class PID:
             elif self.iterm < -self.wind_up:
                 self.iterm = -self.wind_up
 
-            self.dterm = delta_error / delta_time
+            try :
+                self.dterm = delta_error / delta_time
+            except :
+                self.dterm = 0
 
             self.last_time = self.current_time
             self.last_error = self.error
-            print("error", self.error,"Kp", self.kp, "P", self.pterm, "ki", self.ki,  "I", self.ki * self.iterm,"Kd", self.kd , "D", self.dterm * self.kd)
-            self.output = self.pterm + self.ki * self.iterm + self.dterm * self.kd
+            print("error=", self.error, "Kp=", self.kp, "P=", self.pterm, "ki=", self.ki,  
+                    "I=", self.ki * self.iterm,"Kd=", self.kd , "D=", self.dterm * self.kd)
+            self.output = self.pterm + (self.ki * self.iterm) + (self.dterm * self.kd)
 
             if self.output > self.upper_limit:
                 self.output = self.upper_limit
